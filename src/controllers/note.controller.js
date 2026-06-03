@@ -267,6 +267,46 @@ const deleteNote = async (req, res) => {
   }
 };
 
+// 8. DELETE /api/notes/bulk - Delete multiple notes
+const deleteBulkNotes = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "ids array is required and cannot be empty",
+        data: null,
+      });
+    }
+
+    // Validate that each ID in the array is a valid mongoose ObjectId
+    for (const id of ids) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid ID: ${id}`,
+          data: null,
+        });
+      }
+    }
+
+    const deleteResult = await Note.deleteMany({ _id: { $in: ids } });
+
+    res.status(200).json({
+      success: true,
+      message: `${deleteResult.deletedCount} notes deleted successfully`,
+      data: null,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null,
+    });
+  }
+};
+
 module.exports = {
   createNote,
   createBulkNotes,
@@ -275,4 +315,5 @@ module.exports = {
   replaceNote,
   updateNote,
   deleteNote,
+  deleteBulkNotes,
 };
