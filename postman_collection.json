@@ -1,0 +1,461 @@
+{
+  "info": {
+    "name": "Notes REST API - Assignment 03",
+    "description": "Postman Collection for testing the Assignment 03 Notes REST API. Set up the collection variable `base_url` to `http://localhost:5000/api/notes`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api/notes",
+      "type": "string"
+    },
+    {
+      "key": "note_id",
+      "value": "64b1f2c3e4d5a6b7c8d9e0f1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. CRUD",
+      "item": [
+        {
+          "name": "Create Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Team standup agenda\",\n  \"content\": \"Discuss sprint blockers and deployment plan\",\n  \"category\": \"work\",\n  \"isPinned\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Bulk Notes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": [\n    { \"title\": \"Note one\",   \"content\": \"Content one\",   \"category\": \"work\"     },\n    { \"title\": \"Note two\",   \"content\": \"Content two\",   \"category\": \"study\"    },\n    { \"title\": \"Note three\", \"content\": \"Content three\", \"category\": \"personal\" }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/bulk",
+              "host": ["{{base_url}}"],
+              "path": ["bulk"]
+            }
+          }
+        },
+        {
+          "name": "Get All Notes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Note by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{note_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{note_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Full Replace Note (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Completely new title\",\n  \"content\": \"Completely new content\",\n  \"category\": \"personal\",\n  \"isPinned\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{note_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{note_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Partial Update Note (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isPinned\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{note_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{note_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Note by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{note_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{note_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Bulk Notes",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    \"64b1f2c3e4d5a6b7c8d9e0f1\",\n    \"64b1f2c3e4d5a6b7c8d9e0f2\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/bulk",
+              "host": ["{{base_url}}"],
+              "path": ["bulk"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Search",
+      "item": [
+        {
+          "name": "Search Title Only",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/search?q=meeting",
+              "host": ["{{base_url}}"],
+              "path": ["search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "meeting"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Content Only",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/search/content?q=deployment",
+              "host": ["{{base_url}}"],
+              "path": ["search", "content"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "deployment"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Title AND Content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/search/all?q=node",
+              "host": ["{{base_url}}"],
+              "path": ["search", "all"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "node"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Combined Queries",
+      "item": [
+        {
+          "name": "Filter + Sort",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/filter-sort?category=work&sortBy=title&order=asc",
+              "host": ["{{base_url}}"],
+              "path": ["filter-sort"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "work"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "title"
+                },
+                {
+                  "key": "order",
+                  "value": "asc"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter + Paginate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/filter-paginate?category=work&page=1&limit=3",
+              "host": ["{{base_url}}"],
+              "path": ["filter-paginate"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "work"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sort + Paginate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sort-paginate?sortBy=title&order=asc&page=1&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["sort-paginate"],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "title"
+                },
+                {
+                  "key": "order",
+                  "value": "asc"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search + Filter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/search-filter?q=meeting&category=work",
+              "host": ["{{base_url}}"],
+              "path": ["search-filter"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "meeting"
+                },
+                {
+                  "key": "category",
+                  "value": "work"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search + Sort + Paginate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/search-sort-paginate?q=node&sortBy=title&order=asc&page=1&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["search-sort-paginate"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "node"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "title"
+                },
+                {
+                  "key": "order",
+                  "value": "asc"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter + Sort + Paginate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/filter-sort-paginate?category=work&sortBy=title&order=asc&page=1&limit=3",
+              "host": ["{{base_url}}"],
+              "path": ["filter-sort-paginate"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "work"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "title"
+                },
+                {
+                  "key": "order",
+                  "value": "asc"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Master Query",
+      "item": [
+        {
+          "name": "Master Query Builder",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/query?q=meeting&category=work&sortBy=createdAt&order=desc&page=1&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["query"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "meeting"
+                },
+                {
+                  "key": "category",
+                  "value": "work"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Extra Endpoints",
+      "item": [
+        {
+          "name": "Get Note Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{note_id}}/summary",
+              "host": ["{{base_url}}"],
+              "path": ["{{note_id}}", "summary"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
