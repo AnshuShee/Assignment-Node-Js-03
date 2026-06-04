@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createNote, createBulkNotes, getAllNotes, getNoteById, replaceNote, updateNote, deleteNote, deleteBulkNotes, searchByTitle, searchByContent, searchAll } = require("../controllers/note.controller");
+const { createNote, createBulkNotes, getAllNotes, getNoteById, replaceNote, updateNote, deleteNote, deleteBulkNotes, searchByTitle, searchByContent, searchAll, filterAndSort } = require("../controllers/note.controller");
 
 // CRUD bulk
 router.post("/bulk", createBulkNotes);
@@ -10,6 +10,9 @@ router.delete("/bulk", deleteBulkNotes);
 router.get("/search/content", searchByContent);
 router.get("/search/all", searchAll);
 router.get("/search", searchByTitle);
+
+// Combination routes
+router.get("/filter-sort", filterAndSort);
 
 // CRUD single-item routes LAST
 router.post("/", createNote);
