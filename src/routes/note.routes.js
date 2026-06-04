@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createNote, createBulkNotes, getAllNotes, getNoteById, replaceNote, updateNote, deleteNote, deleteBulkNotes, searchByTitle, searchByContent, searchAll, filterAndSort, filterAndPaginate, sortAndPaginate, searchAndFilter, searchSortPaginate, filterSortPaginate, masterQuery } = require("../controllers/note.controller");
+const { createNote, createBulkNotes, getAllNotes, getNoteById, replaceNote, updateNote, deleteNote, deleteBulkNotes, searchByTitle, searchByContent, searchAll, filterAndSort, filterAndPaginate, sortAndPaginate, searchAndFilter, searchSortPaginate, filterSortPaginate, masterQuery, getNoteSummary } = require("../controllers/note.controller");
 
 // CRUD bulk
 router.post("/bulk", createBulkNotes);
@@ -23,6 +23,7 @@ router.get("/query", masterQuery);
 // CRUD single-item routes LAST
 router.post("/", createNote);
 router.get("/", getAllNotes);
+router.get("/:id/summary", getNoteSummary);
 router.get("/:id", getNoteById);
 router.put("/:id", replaceNote);
 router.patch("/:id", updateNote);

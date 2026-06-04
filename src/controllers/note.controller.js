@@ -716,6 +716,52 @@ const masterQuery = async (req, res) => {
   }
 };
 
+// Extra: GET /api/notes/:id/summary
+const getNoteSummary = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid note ID",
+        data: null,
+      });
+    }
+
+    const note = await Note.findById(id);
+
+    if (!note) {
+      return res.status(404).json({
+        success: false,
+        message: "Note not found",
+        data: null,
+      });
+    }
+
+    // A simple summary: title followed by first 50 chars of content
+    const summaryText = note.content.length > 50 
+      ? `${note.content.substring(0, 50)}...` 
+      : note.content;
+
+    res.status(200).json({
+      success: true,
+      message: "Note summary fetched successfully",
+      data: {
+        id: note._id,
+        title: note.title,
+        summary: summaryText,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null,
+    });
+  }
+};
+
 module.exports = {
   createNote,
   createBulkNotes,
@@ -735,4 +781,5 @@ module.exports = {
   searchSortPaginate,
   filterSortPaginate,
   masterQuery,
+  getNoteSummary,
 };
