@@ -663,6 +663,59 @@ const filterSortPaginate = async (req, res) => {
   }
 };
 
+// 18. GET /api/notes/query - Everything at once
+const masterQuery = async (req, res) => {
+  try {
+    const { q, category, isPinned, sortBy, order, page, limit } = req.query;
+
+    // Step 1 — Build filter
+    const filter = {};
+
+    if (q) {
+      filter.$or = [
+        { title:   { $regex: q, $options: "i" } },
+        { content: { $regex: q, $options: "i" } }
+      ];
+    }
+    if (category)                filter.category = category;
+    if (isPinned !== undefined)  filter.isPinned  = isPinned === "true";
+
+    // Step 2 — Sorting
+    const allowedSortFields = ["title", "createdAt", "updatedAt", "category"];
+    const sortField = allowedSortFields.includes(sortBy) ? sortBy : "createdAt";
+    const sortOrder = order === "asc" ? 1 : -1;
+
+    // Step 3 — Pagination
+    const pageNum  = parseInt(page)  || 1;
+    const limitNum = parseInt(limit) || 10;
+    const skip     = (pageNum - 1) * limitNum;
+
+    // Step 4 — Execute
+    const total = await Note.countDocuments(filter);
+    const notes = await Note.find(filter)
+      .sort({ [sortField]: sortOrder })
+      .skip(skip)
+      .limit(limitNum);
+
+    res.status(200).json({
+      success: true,
+      message: "Notes fetched successfully",
+      data: notes,
+      pagination: {
+        total,
+        page:        pageNum,
+        limit:       limitNum,
+        totalPages:  Math.ceil(total / limitNum),
+        hasNextPage: pageNum < Math.ceil(total / limitNum),
+        hasPrevPage: pageNum > 1,
+      },
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message, data: null });
+  }
+};
+
 module.exports = {
   createNote,
   createBulkNotes,
@@ -681,4 +734,5 @@ module.exports = {
   searchAndFilter,
   searchSortPaginate,
   filterSortPaginate,
+  masterQuery,
 };
